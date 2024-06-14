@@ -3,8 +3,8 @@ import 'package:apple_shop/bloc/product/product_event.dart';
 import 'package:apple_shop/bloc/product/product_state.dart';
 import 'package:apple_shop/bloc/product/product_bloc.dart';
 import 'package:apple_shop/data/model/product_image.dart';
-import 'package:apple_shop/data/model/variant.dart';
 import 'package:apple_shop/widgets/cached_image.dart';
+import 'package:apple_shop/data/model/variant.dart';
 import 'package:apple_shop/constants/colors.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
@@ -512,14 +512,8 @@ class VariantContainer extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 10),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                ..._buildColorVariantsOptions(
-                  productVariantList[0].variantList,
-                ),
-              ],
-            ),
+            // StorageVariantList(productVariantList[1].variantList),
+            ColorVariantList(productVariantList[0].variantList),
           ],
         ),
       ),
@@ -837,52 +831,123 @@ class PriceTagButton extends StatelessWidget {
   }
 }
 
-List<Widget> _buildColorVariantsOptions(List<Variant> variantList) {
-  List<Widget> colorWidgets = [];
-
-  for (var colorVariant in variantList) {
-    String categoryColor = 'ff${colorVariant.value}';
-    int hexColor = int.parse(categoryColor, radix: 16);
-
-    var item = Container(
-      margin: const EdgeInsets.only(left: 10),
-      width: 26,
-      height: 26,
-      decoration: BoxDecoration(
-        color: Color(hexColor),
-        borderRadius: const BorderRadius.all(
-          Radius.circular(8),
-        ),
-      ),
-    );
-
-    colorWidgets.add(item);
-  }
-
-  return colorWidgets;
-}
-
-//*************************************************** */
-//
-//
-//TEST 485 LESSON AMIRAHMAD ADIBI FLUTTER CLASS
-//
-//
-//*************************************************** */
+// ignore: must_be_immutable
 class ColorVariantList extends StatefulWidget {
-  const ColorVariantList({super.key});
+  List<Variant> variantList;
+
+  ColorVariantList(this.variantList, {super.key});
 
   @override
   State<ColorVariantList> createState() => _ColorVariantListState();
 }
 
 class _ColorVariantListState extends State<ColorVariantList> {
+  List<Widget> colorWidgets = [];
+
+  @override
+  void initState() {
+    for (var colorVariant in widget.variantList) {
+      String categoryColor = 'ff${colorVariant.value}';
+      int hexColor = int.parse(categoryColor, radix: 16);
+
+      var item = Container(
+        margin: const EdgeInsets.only(left: 10),
+        width: 26,
+        height: 26,
+        decoration: BoxDecoration(
+          color: Color(hexColor),
+          borderRadius: const BorderRadius.all(
+            Radius.circular(8),
+          ),
+        ),
+      );
+
+      colorWidgets.add(item);
+    }
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return Directionality(
+      textDirection: TextDirection.rtl,
+      child: SizedBox(
+        height: 26,
+        child: ListView.builder(
+          scrollDirection: Axis.horizontal,
+          itemCount: colorWidgets.length,
+          itemBuilder: (context, index) {
+            return colorWidgets[index];
+          },
+        ),
+      ),
+    );
   }
 }
-//
-// TEST WIDGETS FLUTTER
-//
-//************************************************************* */
+
+class StorageVariantList extends StatefulWidget {
+  List<Variant> storageVariants;
+
+  StorageVariantList(this.storageVariants, {super.key});
+
+  @override
+  State<StorageVariantList> createState() => _StorageVariantListState();
+}
+
+class _StorageVariantListState extends State<StorageVariantList> {
+  List<Widget> storageWidgetList = [];
+
+  @override
+  void initState() {
+    for (var storageVariant in widget.storageVariants) {
+      var item = Container(
+        margin: const EdgeInsets.only(left: 10),
+        height: 26,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(
+            width: 1,
+            color: CustomColors.grey,
+          ),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: 20,
+          ),
+          child: Center(
+            child: Text(
+              storageVariant.value!,
+              style: const TextStyle(
+                fontFamily: 'SM',
+                fontSize: 12,
+                color: Colors.black,
+              ),
+            ),
+          ),
+        ),
+      );
+
+      storageWidgetList.add(item);
+    }
+
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Directionality(
+      textDirection: TextDirection.rtl,
+      child: SizedBox(
+        height: 26,
+        child: ListView.builder(
+          scrollDirection: Axis.horizontal,
+          itemCount: storageWidgetList.length,
+          itemBuilder: (context, index) {
+            return storageWidgetList[index];
+          },
+        ),
+      ),
+    );
+  }
+}
